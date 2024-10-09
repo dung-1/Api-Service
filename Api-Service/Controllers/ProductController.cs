@@ -42,21 +42,15 @@ namespace Api_Service.Controllers
             var newProduct = await _productService.AddAsync(productDto);
             return CreatedAtAction(nameof(GetById), new { id = newProduct.Id }, newProduct);
         }
-
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] ProductDto productDto, IFormFile imageFile)
         {
             if (id != productDto.Id) return BadRequest();
 
-            if (imageFile != null)
-            {
-                var imagePath = await _productService.SaveImageAsync(imageFile);
-                productDto.Image = imagePath;
-            }
-
-            var updatedProduct = await _productService.UpdateAsync(productDto);
+            var updatedProduct = await _productService.UpdateAsync(productDto, imageFile);
             return Ok(updatedProduct);
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

@@ -1,7 +1,9 @@
-﻿using Api_Service.DTOs;
+﻿using Api_Service.Common;
+using Api_Service.DTOs;
 using Api_Service.Model;
 using Api_Service.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api_Service.Services
 {
@@ -37,38 +39,38 @@ namespace Api_Service.Services
             return _mapper.Map<ProductDto>(product);
         }
 
-        public async Task<ProductDto> UpdateAsync(ProductDto productDto)
+        public async Task<ProductDto> UpdateAsync(ProductDto productDto, IFormFile imageFile)
         {
-            var product = _mapper.Map<Product>(productDto);
+            var existingProduct = await _productRepository.GetByIdAsync(productDto.Id);
+            if (existingProduct == null)
+            {
+                throw new NotFoundException("Product not found");
+            }
+
+            if (imageFile != null)
+            {
+                var imagePath = await SaveImageAsync(imageFile);
+                productDto.Image = imagePath;
+            }
+            else
+            {
+                productDto.Image = existingProduct.Image;
+            }
+
+            var product = _mapper.Map(productDto, existingProduct);
             product = await _productRepository.UpdateAsync(product);
             return _mapper.Map<ProductDto>(product);
         }
+
 
         public async Task<bool> DeleteAsync(int id)
         {
             return await _productRepository.DeleteAsync(id);
         }
 
-        // Thêm phương thức lưu ảnh
-        //public async Task<string> SaveImageAsync(IFormFile imageFile)
-        //{
-        //    if (imageFile != null && imageFile.Length > 0)
-        //    {
-        //        var filePath = Path.Combine("wwwroot/images", imageFile.FileName);
-
-        //        using (var stream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            await imageFile.CopyToAsync(stream);
-        //        }
-
-        //        return filePath;
-        //    }
-
-        //    return null;
-        //}
         public async Task<string> SaveImageAsync(IFormFile imageFile)
         {
-            var uploadDir = Path.Combine(_env.WebRootPath, "images"); // Sử dụng WebRootPath để trỏ tới thư mục wwwroot
+            var uploadDir = Path.Combine(_env.WebRootPath, "images");
             if (!Directory.Exists(uploadDir))
             {
                 Directory.CreateDirectory(uploadDir);
@@ -81,8 +83,6 @@ namespace Api_Service.Services
             {
                 await imageFile.CopyToAsync(fileStream);
             }
-
-            // Trả về đường dẫn tương đối, bỏ 'wwwroot' ra.
             var relativePath = $"/images/{fileName}";
             return relativePath;
         }
