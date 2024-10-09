@@ -1,6 +1,6 @@
 ﻿using Api_Service.Data;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;  
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Api_Service.Common;
 using Api_Service.Mappings;
@@ -27,14 +27,18 @@ GlobalHelper.AddMappingProfiles(builder.Services);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder
+        .WithOrigins("http://192.168.1.20:4200")
+                //.WithOrigins()
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+
+    });
 });
+builder.Services.AddLogging();
 
 
 
