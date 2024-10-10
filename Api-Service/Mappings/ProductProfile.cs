@@ -8,9 +8,11 @@ namespace Api_Service.Mappings
         public ProductProfile()
         {
             // Ánh xạ từ ProductDto sang Product và ngược lại
+            CreateMap<ProductDto, Product>()
+                .ForMember(dest => dest.Image, opt => opt.Condition(src => !string.IsNullOrEmpty(src.Image)));
 
-            CreateMap<ProductDto, Product>();
             CreateMap<Product, ProductDto>();
         }
     }
+
 }

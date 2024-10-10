@@ -1,6 +1,7 @@
 ﻿using Api_Service.DTOs;
 using Api_Service.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Api_Service.Controllers
 {
@@ -43,14 +44,26 @@ namespace Api_Service.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newProduct.Id }, newProduct);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] ProductDto productDto, IFormFile imageFile)
+        public async Task<IActionResult> Update(int id, [FromForm] ProductDto productDto)
         {
             if (id != productDto.Id) return BadRequest();
 
-            var updatedProduct = await _productService.UpdateAsync(productDto, imageFile);
-            return Ok(updatedProduct);
-        }
+            IFormFile imageFile = null;
+            if (Request.Form.Files.Count > 0)
+            {
+                imageFile = Request.Form.Files[0];
+            }
 
+            try
+            {
+                var updatedProduct = await _productService.UpdateAsync(productDto, imageFile);
+                return Ok(updatedProduct);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while updating the product.");
+            }
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

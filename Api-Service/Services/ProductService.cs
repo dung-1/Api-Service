@@ -54,6 +54,7 @@ namespace Api_Service.Services
             }
             else
             {
+                // Giữ nguyên ảnh cũ nếu không có ảnh mới được tải lên
                 productDto.Image = existingProduct.Image;
             }
 
@@ -61,6 +62,7 @@ namespace Api_Service.Services
             product = await _productRepository.UpdateAsync(product);
             return _mapper.Map<ProductDto>(product);
         }
+
 
 
         public async Task<bool> DeleteAsync(int id)
