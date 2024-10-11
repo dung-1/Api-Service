@@ -2,7 +2,7 @@
 
 namespace Api_Service.Model
 {
-    public class Product
+    public class Product : BaseModel
     {
         [Key]
         public int Id { get; set; }
