@@ -37,7 +37,7 @@ namespace Api_Service.Controllers
             return CreatedAtAction(nameof(GetById), new { id = createdCategory.Id }, createdCategory);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<ActionResult<CategoryDto>> Update(int id, CategoryDto categoryDto)
         {
             if (id != categoryDto.Id) return BadRequest();
@@ -45,7 +45,7 @@ namespace Api_Service.Controllers
             return Ok(updatedCategory);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await _categoryService.DeleteAsync(id);

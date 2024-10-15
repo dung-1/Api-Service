@@ -10,8 +10,8 @@ namespace Api_Service.Model
         public string Name { get; set; }
         public int? ParentCategoryId { get; set; }
         public Category ParentCategory { get; set; }
-        public List<Category> Subcategories { get; set; }
-        public List<Product> Products { get; set; }
-        public List<Post> Posts { get; set; }
+        public List<Category> Subcategories { get; set; } = new List<Category>();
+        public List<Product> Products { get; set; } = new List<Product>();
+        public List<Post> Posts { get; set; } = new List<Post>();
     }
 }

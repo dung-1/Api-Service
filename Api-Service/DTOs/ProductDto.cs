@@ -1,6 +1,8 @@
-﻿namespace Api_Service.DTOs
+﻿using Api_Service.Model;
+
+namespace Api_Service.DTOs
 {
-    public class ProductDto
+    public class ProductDto : BaseModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

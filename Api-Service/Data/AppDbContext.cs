@@ -17,6 +17,12 @@ namespace Api_Service.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Category>()
+                .HasMany(c => c.Subcategories)
+                .WithOne(c => c.ParentCategory)
+                .HasForeignKey(c => c.ParentCategoryId);
+
+
+            modelBuilder.Entity<Category>()
                 .HasMany(e => e.Posts)
                 .WithOne(e => e.Category)
                 .HasForeignKey(e => e.CategoryId)

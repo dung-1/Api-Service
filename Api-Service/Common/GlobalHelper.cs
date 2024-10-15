@@ -21,10 +21,13 @@ namespace Api_Service.Common
             // Đăng ký Repository
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
 
             // Đăng ký Service
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IPostService, PostService>();
+
 
             return services;
         }
@@ -33,7 +36,9 @@ namespace Api_Service.Common
             // Đăng ký tất cả các mapping profiles tại đây
             services.AddAutoMapper(
                 typeof(CategoryProfile),
-                typeof(ProductProfile)
+                typeof(ProductProfile),
+                typeof(PostProfile)
+
             );
         }
     }

@@ -59,6 +59,7 @@ namespace Api_Service.Services
             }
 
             var product = _mapper.Map(productDto, existingProduct);
+            product.ModifiedTime = DateTime.UtcNow;
             product = await _productRepository.UpdateAsync(product);
             return _mapper.Map<ProductDto>(product);
         }
