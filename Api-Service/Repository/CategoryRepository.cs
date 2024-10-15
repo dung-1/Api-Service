@@ -15,12 +15,18 @@ namespace Api_Service.Repository
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _context.Categories.Include(c => c.Products).ToListAsync();
+            return await _context.Categories
+                .Include(c => c.Products)
+                .Include(c => c.Subcategories)
+                .ToListAsync();
         }
 
         public async Task<Category> GetByIdAsync(int id)
         {
-            return await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Categories
+                .Include(c => c.Products)
+                .Include(c => c.Subcategories)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Category> AddAsync(Category category)

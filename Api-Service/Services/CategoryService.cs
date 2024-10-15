@@ -38,6 +38,7 @@ namespace Api_Service.Services
         public async Task<CategoryDto> UpdateAsync(CategoryDto categoryDto)
         {
             var category = _mapper.Map<Category>(categoryDto);
+            category.ModifiedTime = DateTime.UtcNow;
             var updatedCategory = await _categoryRepository.UpdateAsync(category);
             return _mapper.Map<CategoryDto>(updatedCategory);
         }

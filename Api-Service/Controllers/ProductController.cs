@@ -43,7 +43,7 @@ namespace Api_Service.Controllers
             var newProduct = await _productService.AddAsync(productDto);
             return CreatedAtAction(nameof(GetById), new { id = newProduct.Id }, newProduct);
         }
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] ProductDto productDto)
         {
             if (id != productDto.Id) return BadRequest();
@@ -65,7 +65,7 @@ namespace Api_Service.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _productService.DeleteAsync(id);
