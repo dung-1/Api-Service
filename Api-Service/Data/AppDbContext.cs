@@ -1,16 +1,17 @@
 ﻿using Api_Service.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Api_Service.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<UserAccount>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Post> Posts { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,7 +22,6 @@ namespace Api_Service.Data
                 .WithOne(c => c.ParentCategory)
                 .HasForeignKey(c => c.ParentCategoryId);
 
-
             modelBuilder.Entity<Category>()
                 .HasMany(e => e.Posts)
                 .WithOne(e => e.Category)
@@ -30,15 +30,8 @@ namespace Api_Service.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Category>()
-                 .HasMany(e => e.Products)
-                 .WithOne(e => e.Category)
-                 .HasForeignKey(e => e.CategoryId)
-                 .IsRequired()
-                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Product>()
-                .HasOne(e => e.Category)
-                .WithMany(e => e.Products)
+                .HasMany(e => e.Products)
+                .WithOne(e => e.Category)
                 .HasForeignKey(e => e.CategoryId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
@@ -51,5 +44,6 @@ namespace Api_Service.Data
                .OnDelete(DeleteBehavior.Restrict);
         }
     }
+
 
 }
