@@ -4,13 +4,8 @@ namespace Api_Service.DTOs
 {
     public class RegisterDto
     {
-        [Required]
-        public string Username { get; set; }
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-        [Required]
-        [StringLength(100, MinimumLength = 6)]
-        public string Password { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }

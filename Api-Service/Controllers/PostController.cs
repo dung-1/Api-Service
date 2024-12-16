@@ -1,11 +1,14 @@
 ﻿using Api_Service.DTOs;
 using Api_Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_Service.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles = "Basic")]
+    [Authorize]
     public class PostController : ControllerBase
     {
         private readonly IPostService _postService;
