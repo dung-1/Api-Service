@@ -1,8 +1,7 @@
 ﻿using Api_Service.Mappings;
 using Api_Service.Repository;
 using Api_Service.Services;
-using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
+using Api_Service.Services.Jwt;
 
 namespace Api_Service.Common
 {
@@ -22,12 +21,14 @@ namespace Api_Service.Common
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
+            //services.AddScoped<IUserRepository, UserRepository>();
 
             // Đăng ký Service
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IPostService, PostService>();
-
+            //services.AddScoped<IAuthService, AuthService>();
+            //services.AddScoped<IJwtService, JwtService>();
 
             return services;
         }

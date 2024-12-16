@@ -1,10 +1,15 @@
 ﻿using Api_Service.DTOs;
 using Api_Service.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace Api_Service.Controllers
 {
+
+    [Authorize(Roles = "User")]
+
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
