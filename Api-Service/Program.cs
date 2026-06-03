@@ -1,21 +1,38 @@
 ﻿using Api_Service.Data;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
 using Api_Service.Common;
-using Api_Service.Mappings;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 
 // Thêm dịch vụ DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
 
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            };
+    });
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -25,21 +42,25 @@ GlobalHelper.AddMappingProfiles(builder.Services);
 
 // Thêm dịch vụ AddAutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins", builder =>
-    {
-        builder
-        .WithOrigins("http://192.168.1.20:4200")
-                //.WithOrigins()
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .AllowCredentials();
-
-    });
+  options.AddPolicy("AllowAngular",
+      policy =>
+      {
+        policy
+              .WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+      });
 });
 builder.Services.AddLogging();
-
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+      options.JsonSerializerOptions.ReferenceHandler =
+          System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 
 var app = builder.Build();
@@ -48,18 +69,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.UseDeveloperExceptionPage();
-
 }
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(app.Environment.ContentRootPath, "wwwroot")), // Sử dụng app.Environment.ContentRootPath
-    RequestPath = "/static"
-});
-app.UseCors("AllowAllOrigins");
-app.UseStaticFiles();
+
 app.UseHttpsRedirection();
+app.UseCors("AllowAngular");
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
